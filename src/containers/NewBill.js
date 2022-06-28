@@ -17,6 +17,8 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
+    //if file name is png, jpg or jpeg, then we can upload it
+    if (e.target.files[0].name.match(/\.(png|jpg|jpeg)$/)) {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
@@ -39,6 +41,12 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+  }
+  // else we display an error message and we reset the file input
+   else {
+    this.document.querySelector(`input[data-testid="file"]`).value = ""
+    alert("Veuillez choisir un fichier de type png, jpg ou jpeg")
+  }
   }
   handleSubmit = e => {
     e.preventDefault()
