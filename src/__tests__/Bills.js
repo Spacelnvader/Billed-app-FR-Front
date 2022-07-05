@@ -2,10 +2,13 @@
  * @jest-environment jsdom
  */
 
-import {screen, waitFor} from "@testing-library/dom"
+import "@testing-library/jest-dom"
+import { screen, getByTestId, getAllByTestId, getByText, waitFor } from "@testing-library/dom"
+import userEvent from "@testing-library/user-event"
 import BillsUI from "../views/BillsUI.js"
+import Bills from "../containers/Bills.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
@@ -37,3 +40,31 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+describe("When I click on the button 'Nouvelle note de frais'", () => {
+  test("Then I should navigate to #employee/bill/new", () => {
+    // Vérifie qu'on arrive bien sur la page NewBill
+    const onNavigate = (pathname) => {
+      document.body.innerHTML = ROUTES({ pathname })
+    }
+    Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+    window.localStorage.setItem('user', JSON.stringify({
+      type: 'Employee'
+    }))
+    const billsPage = new Bills({
+      document, onNavigate, store: null, bills: bills, localStorage: window.localStorage
+    })
+    // on récupère la fonction pour le test
+    const handleClickNewBill = jest.fn(billsPage.handleClickNewBill);
+    // on récupère l'accès au bouton qui dirige vers la page souhaitée
+    const btnNewBill = getByTestId(document.body, "btn-new-bill");
+    // on simule l'action
+    btnNewBill.addEventListener("click", handleClickNewBill);
+    userEvent.click(btnNewBill);
+    // on vérifie que la fonction est appelée et que la page souhaitée s'affiche
+    expect(handleClickNewBill).toHaveBeenCalled();
+    expect(
+      getByText(document.body, "Envoyer une note de frais")
+    ).toBeTruthy();
+  });
+});
