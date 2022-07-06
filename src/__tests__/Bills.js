@@ -10,6 +10,7 @@ import Bills from "../containers/Bills.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
+import mockStore from "../__mocks__/store"
 
 import router from "../app/Router.js";
 
@@ -28,7 +29,9 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
-      //to-do write expect expression
+      //On ajout le Expect qui manquait
+      expect(windowIcon).toHaveClass('active-icon')
+
 
     })
     test("Then bills should be ordered from earliest to latest", () => {
@@ -68,3 +71,32 @@ describe("When I click on the button 'Nouvelle note de frais'", () => {
     ).toBeTruthy();
   });
 });
+
+// Test API GET Bills ////
+  describe("When I navigate to Bills page", () => {
+    describe("When we call API", () => {
+      beforeEach(() => {
+        jest.spyOn(mockStore, "bills")
+        Object.defineProperty(
+          window,
+          'localStorage',
+          { value: localStorageMock }
+        )
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee',
+          email: "a@a"
+        }))
+        const root = document.createElement("div")
+        root.setAttribute("id", "root")
+        document.body.appendChild(root)
+        router()
+      })
+      test("fetches bills from an API", async () => {
+        // Vérifie que le call API renvoie bien toutes les factures
+        const bills = await mockStore.bills().list()
+        expect(bills.length).toBe(4);
+      })
+    })
+  })
+
+

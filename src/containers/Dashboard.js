@@ -89,7 +89,7 @@ export default class {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
     // correction here : % 2 was not returning the expected value.
-    if (this.counter <= 2) {
+    if (this.counter <= 1) {
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
@@ -146,7 +146,6 @@ export default class {
       this.counter ++
     }
     
-
     bills.forEach(bill => {
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
