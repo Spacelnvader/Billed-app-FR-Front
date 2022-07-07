@@ -55,8 +55,11 @@ export default () => {
                   </div>
                   <div class="col-half">
                     <label for="file" class="bold-label">Justificatif</label>
-                    <input required type="file" class="form-control blue-border" data-testid="file" />
+                    <input required type="file" accept=".png, .jpg, .jpeg" class="form-control blue-border" data-testid="file" />
                   </div>
+                  
+                  <p class="hidden" data-testid="message">Ce format de fichier n'est pas accepté</p>
+                  
                 </div>
             </div>
             <div class="row">
@@ -67,6 +70,7 @@ export default () => {
               </div>
             </div>
           </form>
+          <p class="hidden" data-testid="errorAPI">Erreur</p>
         </div>
       </div>
     </div>

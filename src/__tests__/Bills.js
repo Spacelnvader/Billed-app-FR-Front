@@ -11,8 +11,9 @@ import { bills } from "../fixtures/bills.js"
 import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
-
 import router from "../app/Router.js";
+
+jest.mock("../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -72,31 +73,96 @@ describe("When I click on the button 'Nouvelle note de frais'", () => {
   });
 });
 
-// Test API GET Bills ////
-  describe("When I navigate to Bills page", () => {
-    describe("When we call API", () => {
-      beforeEach(() => {
-        jest.spyOn(mockStore, "bills")
-        Object.defineProperty(
-          window,
-          'localStorage',
-          { value: localStorageMock }
-        )
-        window.localStorage.setItem('user', JSON.stringify({
-          type: 'Employee',
-          email: "a@a"
-        }))
-        const root = document.createElement("div")
-        root.setAttribute("id", "root")
-        document.body.appendChild(root)
-        router()
-      })
-      test("fetches bills from an API", async () => {
-        // Vérifie que le call API renvoie bien toutes les factures
-        const bills = await mockStore.bills().list()
-        expect(bills.length).toBe(4);
-      })
+// describe("When I click on the eye icon", () => {
+//   test("A modal should open", () => {
+//     // Vérifie l'ouverture de la modale si click sur le bouton "oeil" d'une facture
+//     const onNavigate = (pathname) => {
+//       document.body.innerHTML = ROUTES({ pathname })
+//     }
+//     Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+//     window.localStorage.setItem('user', JSON.stringify({
+//       type: 'Employee'
+//     }))
+//     const billsPage = new Bills({
+//       document, onNavigate, store: null, bills: bills, localStorage: window.localStorage
+//     })
+//     // on affiche les factures dans le HTML
+//     document.body.innerHTML = BillsUI({ data: { bills } })
+//     // on mock la modale
+//     $.fn.modal = jest.fn();
+//     // on récupère le premier bouton trouvé
+//     const firstEyeIcon = getAllByTestId(document.body, "btn-new-bill")[0];
+//     // on récupère la fonction qui ouvre la modale
+//     const handleClickIconEye = jest.fn(
+//       billsPage.handleClickIconEye(firstEyeIcon)
+//     );
+//     // on simule l'action
+//     firstEyeIcon.addEventListener("click", handleClickIconEye);
+//     userEvent.click(firstEyeIcon);
+//     // on vérifie l'appel de la fonction et la présence de la modale
+//     expect(handleClickIconEye).toHaveBeenCalled();
+//     const modal = screen.getByTestId("modale");
+//     expect(modal).toBeTruthy();
+//   });
+// });
+
+//// Test API GET Bills ////
+describe("When I navigate to Bills page", () => {
+  describe("When we call API", () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+      )
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee',
+        email: "a@a"
+      }))
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
     })
-  })
-
-
+    test("fetches bills from an API", async () => {
+      // Vérifie que le call API renvoie bien toutes les factures
+      const bills = await mockStore.bills().list()
+      expect(bills.length).toBe(4);
+    })
+    test("fetches bills from mock API", async () => {
+      // Vérifie que les factures sont bien les données mockées
+      window.onNavigate(ROUTES_PATH.Bills)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText("encore")
+      expect(message).toBeTruthy()
+    })
+    test("fetches bills from an API and fails with 404 message error", async () => {
+      // après avoir simuler les rejet de la promesse, on vérifie l'affichage du message d'erreur
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }
+      })
+      window.onNavigate(ROUTES_PATH.Bills)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    })
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 500"))
+          }
+        }
+      })
+      window.onNavigate(ROUTES_PATH.Bills)
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    })
+  });
+});
