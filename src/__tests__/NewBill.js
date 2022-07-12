@@ -100,7 +100,7 @@ describe("Given I am connected as an employee", () => {
   })
 })
 
-// TEST API resonse
+// TEST API response
 
 describe("When I am on NewBill Page and submit the form", () => {
   beforeEach(() => {

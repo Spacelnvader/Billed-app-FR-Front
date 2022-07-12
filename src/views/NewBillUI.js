@@ -58,7 +58,7 @@ export default () => {
                     <input required type="file" accept=".png, .jpg, .jpeg" class="form-control blue-border" data-testid="file" />
                   </div>
                   
-                  <p class="hidden" data-testid="message">Ce format de fichier n'est pas accepté</p>
+                  <p class="hidden" data-testid="message">Seuls les formats .png, .jpeg et .jpg sont acceptés</p>
                   
                 </div>
             </div>
@@ -70,7 +70,7 @@ export default () => {
               </div>
             </div>
           </form>
-          <p class="hidden" data-testid="errorAPI">Erreur</p>
+          <p class="hidden" data-testid="errorAPI"></p>
         </div>
       </div>
     </div>
