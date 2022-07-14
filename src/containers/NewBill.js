@@ -23,7 +23,7 @@ export default class NewBill {
     const controlFormat = authorizFormats.includes(file.type)
     const messageError = this.document.querySelector('p[data-testid="message"')
     if (controlFormat) {
-      // si le fichier est conforme
+      // si le fichier est conforme ...
       messageError.classList.add("hidden")
       const filePath = e.target.value.split(/\\/g)
       const fileName = filePath[filePath.length - 1]
