@@ -26,9 +26,12 @@ const row = (bill) => {
       data.sort((a, b) => (((a.dateForCompare || a.date) < (b.dateForCompare || b.date)) ? 1 : -1))
       returnValue = data.map(bill => row(bill)).join("")
     }
+
   
     return returnValue
+    
   }
+
 
 export default ({ data: bills, loading, error }) => {
   
