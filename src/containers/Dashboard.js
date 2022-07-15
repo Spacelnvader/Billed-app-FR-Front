@@ -88,7 +88,7 @@ export default class {
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    if (this.counter <= 2) {
+    if (this.counter % 2 === 0) {
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
@@ -146,7 +146,11 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      // Add Event listeners only if this element not have data-listener 
+      if(!$(`#open-bill${bill.id}`).data('listener')) {
+        $(`#open-bill${bill.id}`).data('listener', true)
+        $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      }      
     })
 
     return bills

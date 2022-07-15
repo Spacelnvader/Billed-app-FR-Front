@@ -20,18 +20,8 @@ const row = (bill) => {
   }
 
   const rows = (data) => {
-    // Modifications pour trier les factures et pour trier le fichier de test
-    let returnValue = ""
-    if (data && data.length) {
-      data.sort((a, b) => (((a.dateForCompare || a.date) < (b.dateForCompare || b.date)) ? 1 : -1))
-      returnValue = data.map(bill => row(bill)).join("")
-    }
-
-  
-    return returnValue
-    
-  }
-
+  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+}
 
 export default ({ data: bills, loading, error }) => {
   
