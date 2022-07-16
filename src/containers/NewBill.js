@@ -21,7 +21,6 @@ export default class NewBill {
     // formats authorisés et comparaison avec le format du fichier sélectionné
     const authorizFormats = ['image/jpeg', 'image/jpg', 'image/png']
     const controlFormat = authorizFormats.includes(file.type)
-    const messageError = this.document.querySelector('p[data-testid="message"')
     if (controlFormat) {
       // si le fichier est conforme ...
       const filePath = e.target.value.split(/\\/g)
