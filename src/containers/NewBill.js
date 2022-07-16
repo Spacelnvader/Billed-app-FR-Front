@@ -24,7 +24,6 @@ export default class NewBill {
     const messageError = this.document.querySelector('p[data-testid="message"')
     if (controlFormat) {
       // si le fichier est conforme ...
-      messageError.classList.add("hidden")
       const filePath = e.target.value.split(/\\/g)
       const fileName = filePath[filePath.length - 1]
       const formData = new FormData()
@@ -47,8 +46,8 @@ export default class NewBill {
         })
         .catch(error => console.error(error))
     } else {
-      // si le fichier ne possède pas une extention authorisée
-      messageError.classList.remove("hidden")
+      // si le fichier ne possède pas une extention autorisée
+      alert("Veuillez choisir un fichier de type png, jpg ou jpeg")
       e.target.value = ""
     }
 
@@ -56,7 +55,7 @@ export default class NewBill {
 
   handleSubmit = e => {
     e.preventDefault()
-    //console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
