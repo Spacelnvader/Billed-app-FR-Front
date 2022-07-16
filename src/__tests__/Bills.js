@@ -35,8 +35,10 @@ describe("Given I am connected as an employee", () => {
 
 
     })
-    test("Then bills should be ordered from earliest to latest", () => {
-      document.body.innerHTML = BillsUI({ data: bills })
+    test('Then bills should be ordered from earliest to latest', () => {
+      // Array Sort Bills By Date DESC
+      const html = BillsUI({ data: bills.sort((a, b) => new Date(b.date) - new Date(a.date)) })
+      document.body.innerHTML = html
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
